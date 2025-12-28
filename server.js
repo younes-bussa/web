@@ -1,25 +1,18 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const cors = require("cors");
-const nodemailer = require("nodemailer");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json()); // remplace bodyParser.json()
 
-// Transporter mail (adapte host/port si tu n'utilises pas Gmail)
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+// Petit check au démarrage
+if (!process.env.RESEND_API_KEY || !process.env.EMAIL_TO) {
+  console.warn("⚠️ RESEND_API_KEY ou EMAIL_TO non définis dans l'environnement Render.");
+}
 
+// Endpoint API pour le formulaire
 app.post("/api/contact", async (req, res) => {
   const { nom, email, telephone, description } = req.body;
 
@@ -30,10 +23,10 @@ app.post("/api/contact", async (req, res) => {
     });
   }
 
-  const mailOptions = {
-    from: `"Site Plomberie" <${process.env.EMAIL_USER}>`,
-    to: process.env.EMAIL_USER,
-    subject: "Nouvelle demande depuis le site",
+  const payload = {
+    from: "Site miplomberie <no-reply@miplomberie.com>", // adresse technique
+    to: process.env.EMAIL_TO,
+    subject: "Nouvelle demande depuis le site miplomberie",
     text: `
 Nom      : ${nom}
 Email    : ${email || "Non fourni"}
@@ -45,10 +38,28 @@ ${description}
   };
 
   try {
-    await transporter.sendMail(mailOptions);
+    const resp = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!resp.ok) {
+      const txt = await resp.text();
+      console.error("Erreur API Resend:", resp.status, txt);
+      return res.status(500).json({
+        success: false,
+        error: "Erreur lors de l'envoi de l'email.",
+      });
+    }
+
+    // Tout s'est bien passé côté Resend
     return res.json({ success: true });
   } catch (err) {
-    console.error("Erreur envoi mail :", err);
+    console.error("Erreur réseau vers Resend:", err);
     return res.status(500).json({
       success: false,
       error: "Erreur lors de l'envoi de l'email.",
@@ -56,6 +67,7 @@ ${description}
   }
 });
 
+// Pour tester rapidement l'API
 app.get("/", (req, res) => {
   res.send("API Plomberie OK");
 });
