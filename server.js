@@ -1,25 +1,37 @@
+// server.js
 const express = require("express");
 const cors = require("cors");
-
-// fetch pour Node (via node-fetch)
-const fetch = (...args) =>
-  import("node-fetch").then(({ default: fetch }) => fetch(...args));
+const { Resend } = require("resend");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ===== MIDDLEWARES =====
 app.use(cors());
-app.use(express.json()); // remplace bodyParser.json()
+app.use(express.json());
 
-// Log de contrôle au démarrage
-console.log("✅ Backend démarré sur port", PORT);
-console.log("RESEND_API_KEY définie ?", !!process.env.RESEND_API_KEY);
-console.log("EMAIL_TO défini ?", !!process.env.EMAIL_TO);
+// ===== RESEND CONFIG =====
+if (!process.env.RESEND_API_KEY) {
+  console.warn("⚠️  RESEND_API_KEY n'est pas définie dans les variables d'environnement.");
+}
+if (!process.env.EMAIL_TO) {
+  console.warn("⚠️  EMAIL_TO n'est pas définie dans les variables d'environnement.");
+}
 
-// Endpoint API pour le formulaire
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+// ===== ROUTES =====
+
+// Test simple pour voir si l'API est up
+app.get("/", (req, res) => {
+  res.send("API Plomberie OK");
+});
+
+// Formulaire de contact
 app.post("/api/contact", async (req, res) => {
   const { nom, email, telephone, description } = req.body;
 
+  // Validation basique
   if (!nom || (!email && !telephone) || !description) {
     return res.status(400).json({
       success: false,
@@ -27,43 +39,25 @@ app.post("/api/contact", async (req, res) => {
     });
   }
 
-  const payload = {
-    from: "Plomberie <onboarding@resend.dev>", // adresse technique valide Resend
-    to: process.env.EMAIL_TO,
-    subject: "Nouvelle demande depuis le site miplomberie",
-    text: `
-Nom      : ${nom}
-Email    : ${email || "Non fourni"}
-Téléphone: ${telephone || "Non fourni"}
-
-Description :
-${description}
-    `,
-  };
-
   try {
-    const resp = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
+    const result = await resend.emails.send({
+      from: "Plomberie <onboarding@resend.dev>",   // expéditeur technique Resend
+      to: process.env.EMAIL_TO,                    // adresse où TU reçois les mails
+      subject: "Nouvelle demande depuis miplomberie",
+      html: `
+        <h2>Nouvelle demande client</h2>
+        <p><strong>Nom :</strong> ${nom}</p>
+        <p><strong>Email :</strong> ${email || "Non fourni"}</p>
+        <p><strong>Téléphone :</strong> ${telephone || "Non fourni"}</p>
+        <p><strong>Description :</strong></p>
+        <p>${description.replace(/\n/g, "<br>")}</p>
+      `,
     });
 
-    const bodyText = await resp.text();
-    console.log("Réponse Resend:", resp.status, bodyText);
-
-    if (!resp.ok) {
-      return res.status(500).json({
-        success: false,
-        error: "Erreur lors de l'envoi de l'email.",
-      });
-    }
-
+    console.log("✅ Email envoyé via Resend:", result);
     return res.json({ success: true });
   } catch (err) {
-    console.error("Erreur réseau vers Resend:", err);
+    console.error("❌ Erreur Resend:", err);
     return res.status(500).json({
       success: false,
       error: "Erreur lors de l'envoi de l'email.",
@@ -71,11 +65,7 @@ ${description}
   }
 });
 
-// GET pour test basique
-app.get("/", (req, res) => {
-  res.send("API Plomberie OK");
-});
-
+// ===== LANCEMENT SERVEUR =====
 app.listen(PORT, () => {
-  console.log(`Serveur backend sur port ${PORT}`);
+  console.log(`🚀 Serveur backend démarré sur port ${PORT}`);
 });
