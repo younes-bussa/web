@@ -22,21 +22,19 @@ app.post("/api/contact", async (req, res) => {
       error: "Champs manquants.",
     });
   }
-
-  const payload = {
-    from: "Site miplomberie <no-reply@miplomberie.com>", // adresse technique
-    to: process.env.EMAIL_TO,
-    subject: "Nouvelle demande depuis le site miplomberie",
-    text: `
+    const payload = {
+        from: "Plomberie <onboarding@resend.dev>",
+        to: process.env.EMAIL_TO,
+        subject: "Nouvelle demande depuis le site miplomberie",
+        text: `
 Nom      : ${nom}
 Email    : ${email || "Non fourni"}
 Téléphone: ${telephone || "Non fourni"}
 
 Description :
 ${description}
-    `,
-  };
-
+  `,
+    };
   try {
     const resp = await fetch("https://api.resend.com/emails", {
       method: "POST",
