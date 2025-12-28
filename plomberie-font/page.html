@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>miplomberie</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <header class="navbar">
+    <div class="container nav-content">
+      <div class="logo"><span>mi</span>plomberie</div>
+      <nav class="nav">
+        <a href="#home">Accueil</a>
+        <a href="#about">Qui sommes-nous</a>
+        <a href="#services">Services</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <a href="#demande" class="btn-demande">Faire une demande</a>
+
+    </div>
+  </header>
+
+  <!-- ACCUEIL -->
+  <section id="home" class="section hero">
+    <div class="container hero-content">
+      <div class="hero-text">
+        <h1>Plombier à votre service – intervention rapide et fiable</h1>
+        <p>
+          Dépannage, débouchage, chauffe-eau, installation et rénovation.
+          Intervention 7j/7 sur rendez-vous, devis clair avant chaque travaux.
+        </p>
+        <div class="hero-actions">
+          <a href="#demande" class="btn-primary">Demander un devis</a>
+          <div class="hero-phone">
+            Urgence ? <span>06 12 34 56 78</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <h2>Urgence plomberie</h2>
+        <p><strong>Téléphone :</strong> 06 68 45 44 69</p>
+        <p><strong>Zone :</strong> Clermant ferrand</p>
+        <p><strong>Horaire :</strong>24/7</p>
+        <p><strong>Engagement :</strong> intervention rapide, travail propre.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUI SOMMES-NOUS -->
+  <section id="about" class="section">
+    <div class="container about-content">
+      <div>
+        <h2 class="section-title">Qui sommes-nous ?</h2>
+        <p>
+          Fondée en 2022, miplomberie est une entreprise individuelle avec 10 ans d'expérience dans le domaine de la plomberie. Notre équipe dévouée se concentre sur un travail minutieux pour assurer la satisfaction de nos clients. Nous mettons un point d'honneur à offrir un service de qualité, de la rénovation de salles de bains à la détection de fuites, en passant par les installations et les réparations d'urgence.         
+        </p>
+        <p>
+          Situé à Clermont-Ferrand, j’accompagne particuliers et professionnels dans un rayon de 30 km autour de la ville.
+        </p>
+      </div>
+      
+      <div class="about-highlight">
+        <ul>
+          <li></li>
+          <li>Conseils personnalisés sur vos projets</li>
+          <li>Travail soigné et garanti</li>
+          <li>Intervention dans votre secteur</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+<section id="services" class="section section-alt">
+  <div class="container">
+    <h2 class="section-title">Nos services</h2>
+
+    <div class="services-grid">
+      <!-- Service 1 -->
+      <article class="service-card">
+        <img src="images/depannage-fuite.png" alt="Dépannage et réparation de fuites" class="service-img">
+        <div class="service-text">
+          <h3>Dépannage & fuites</h3>
+          <p>
+            Intervention rapide pour fuites d’eau, robinet qui coule, chasse d’eau,
+            tuyaux percés et autres problèmes urgents.
+          </p>
+        </div>
+      </article>
+
+      <!-- Service 2 -->
+      <article class="service-card">
+        <img src="images/debouchage.png" alt="Débouchage canalisation et WC" class="service-img">
+        <div class="service-text">
+          <h3>Débouchage</h3>
+          <p>
+            Débouchage d’éviers, lavabos, douches, WC et canalisations engorgées,
+            pour retrouver un écoulement normal.
+          </p>
+        </div>
+      </article>
+
+      <!-- Service 3 -->
+      <article class="service-card">
+        <img src="images/chauffe-eau.png" alt="Installation et dépannage de chauffe-eau" class="service-img">
+        <div class="service-text">
+          <h3>Chauffe-eau</h3>
+          <p>
+            Pose, remplacement et dépannage de chauffe-eau pour garantir votre
+            confort en eau chaude au quotidien.
+          </p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+  
+
+  <!-- DEMANDE / FORMULAIRE -->
+  <section id="demande" class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">Faire une demande</h2>
+      <p class="section-subtitle">
+        Décrivez votre besoin, nous vous recontactons avec une estimation ou un rendez-vous.
+      </p>
+
+      <form id="demandeForm" class="form-card">
+        <div class="form-group">
+          <label for="nom">Nom *</label>
+          <input type="text" id="nom" name="nom" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+
+          <div class="form-group">
+            <label for="telephone">Téléphone</label>
+            <input type="tel" id="telephone" name="telephone">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description de votre besoin *</label>
+          <textarea id="description" name="description" rows="4" required></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary">Envoyer la demande</button>
+        <p id="demandeStatus" class="form-status"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section">
+    <div class="container contact-layout">
+      <div class="contact-info">
+        <h2 class="section-title">Contact</h2>
+        <p>N’hésitez pas à nous appeler ou à nous écrire pour une question ou un devis.</p>
+        <p><strong>Téléphone :</strong> 06 12 34 56 78</p>
+        <p><strong>Email :</strong> contact@plomberiepro.fr</p>
+      </div>
+  </section>
+  
+  <!-- PIED DE PAGE -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <p>© <span id="year"></span> PlomberiePro – Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
